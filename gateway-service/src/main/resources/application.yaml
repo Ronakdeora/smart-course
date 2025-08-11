@@ -1,0 +1,51 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+    #  spring:
+    #    cloud:
+    #      gateway:
+    #        routes:
+    #          - id: user-service
+    #            uri: http://localhost:8081
+    #            predicates:
+    #              - Path=/user-service/**
+    # Eureka Config
+    eureka:
+      client:
+        service-url:
+          defaultZone: http://localhost:8761/eureka
+
+
+#services:
+#  eureka:
+#    build: ./discovery-service
+#    ports: ["8761:8761"]
+#  gateway:
+#    build: ./gateway-service
+#    ports: ["8080:8080"]
+#    depends_on: [eureka]
+#  user:
+#    build: ./user-service
+#    ports: ["8101:8101"]
+#    depends_on: [eureka]
+#  learning:
+#    build: ./learning-service
+#    ports: ["8102:8102"]
+#    depends_on: [eureka]
+#  assessment:
+#    build: ./assessment-service
+#    ports: ["8103:8103"]
+#    depends_on: [eureka]
+
+
