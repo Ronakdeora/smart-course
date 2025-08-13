@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: auth-service
+  # For Rabbit MQ
+  rabbitmq:
+    host: localhost
+    password: guest
+    port: 5672
+    username: guest
+
+  r2dbc:
+    url: r2dbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+    # Flyway uses JDBC settings
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    user: ${DB_USER}
+    password: ${DB_PASSWORD}
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+
+security:
+  jwt:
+    issuer: "http://localhost:9000"
+    access-ttl-min: 15
+    private-key-pem: ${JWT_PRIVATE_PEM_KEY_LOCATION}
+    public-key-pem:  ${JWT_PUBLIC_PEM_KEY_LOCATION}
+
+
+server:
+  port: 9000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+logging:
+  level:
+    org.springframework.r2dbc: INFO
+    io.r2dbc.postgresql: INFO
+    org.springframework.amqp: ERROR
