@@ -1,25 +1,51 @@
 package com.smart.auth_service.config;
 
-import com.smart.auth_service.config.properties.KeyLoader;
-import com.smart.auth_service.config.properties.SecurityProps;
+import com.smart.auth_service.entities.Account;
+import com.smart.auth_service.repositories.AccountRepo;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import reactor.core.publisher.Mono;
 
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import java.util.Collections;
 
 @Configuration
+@EnableWebFluxSecurity
 public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder(); // BCrypt/Argon2
+    }
+
+    @Bean
+    ReactiveAuthenticationManager authenticationManager(
+            AccountRepo accounts, PasswordEncoder encoder) {
+
+        return auth -> {
+            String email = auth.getName();
+            String raw = String.valueOf(auth.getCredentials());
+
+            return accounts.findByEmail(email)
+                    .filter(Account::isActive)
+                    .filter(acc -> encoder.matches(raw, acc.getPasswordHash()))
+                    .switchIfEmpty(Mono.error(new BadCredentialsException("Invalid credentials")))
+                    .map(acc -> new UsernamePasswordAuthenticationToken(
+                            acc.getId(),                      // principal is the userId for jwt creation
+                            acc.getEmail(),
+                            Collections.emptyList()
+                    ));
+        };
     }
 
     @Bean

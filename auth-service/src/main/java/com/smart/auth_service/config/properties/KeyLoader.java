@@ -8,6 +8,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 public final class KeyLoader {
+//    key Interfaces needed to JwtEncoder-Decoder creation
     public static RSAPrivateKey loadPrivateKey(String pem) {
         String clean = pem.replaceAll("-----\\w+ PRIVATE KEY-----", "").replaceAll("\\s", "");
         byte[] der = Base64.getDecoder().decode(clean);
