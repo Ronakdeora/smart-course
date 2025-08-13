@@ -1,11 +1,13 @@
 package com.smart.auth_service.services.serviceImpl;
 
+import com.smart.auth_service.config.properties.SecurityProps;
 import com.smart.auth_service.entities.Account;
 import com.smart.auth_service.repositories.AccountRepo;
 import com.smart.auth_service.services.IAuthService;
 import com.smart.auth_service.services.rabbitmq.publishers.MQPublisher;
 import com.smart.common_libs.entities.requestDTOs.auth_service.LoginReq;
 import com.smart.common_libs.entities.requestDTOs.auth_service.RegisterReq;
+import com.smart.common_libs.entities.responseDTOs.auth_service.AccountPrincipal;
 import com.smart.common_libs.entities.responseDTOs.auth_service.TokenRes;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,7 @@ public class AuthService implements IAuthService {
     private final JwtService jwt;
     private MQPublisher publisher;
     private final ReactiveAuthenticationManager authenticationManager;
+    private SecurityProps securityProps;
 
 
     @Override
@@ -60,10 +63,10 @@ public class AuthService implements IAuthService {
         var unauth = UsernamePasswordAuthenticationToken.unauthenticated(req.email(), req.password());
 
         return authenticationManager.authenticate(unauth)
-                .map(auth -> String.valueOf(auth.getPrincipal()))        // userId as String
-                .map(userId -> {
-                    var token = jwt.accessTokenForSubject(userId);
-                    return new TokenRes(token, 60L * 15);
+                .map(auth -> (AccountPrincipal) auth.getPrincipal())        // userId as String
+                .map(user -> {
+                    var token = jwt.accessTokenForSubject(user);
+                    return new TokenRes(token, securityProps.getAccessTtlMin()*60L);
                 })
                 .onErrorResume(e ->
                         Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials")));

@@ -2,6 +2,7 @@ package com.smart.auth_service.config;
 
 import com.smart.auth_service.entities.Account;
 import com.smart.auth_service.repositories.AccountRepo;
+import com.smart.common_libs.entities.responseDTOs.auth_service.AccountPrincipal;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,9 +42,8 @@ public class SecurityConfig {
                     .filter(acc -> encoder.matches(raw, acc.getPasswordHash()))
                     .switchIfEmpty(Mono.error(new BadCredentialsException("Invalid credentials")))
                     .map(acc -> new UsernamePasswordAuthenticationToken(
-                            acc.getId(),                      // principal is the userId for jwt creation
-                            acc.getEmail(),
-                            Collections.emptyList()
+                            new AccountPrincipal(acc.getId(),acc.getEmail(),acc.getFullName()),                      // complete account object
+                            null
                     ));
         };
     }
