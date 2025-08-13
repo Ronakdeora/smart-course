@@ -2,9 +2,10 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS citext;
 
 CREATE TABLE accounts (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),   -- generate here
   email CITEXT UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
+  full_name TEXT,
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
   email_verified_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),

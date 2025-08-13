@@ -22,6 +22,7 @@ import java.util.UUID;
 public class Account {
     @Id @Column("id") private UUID id;
     @Column("email") private String email;
+    @Column("full_name") private String fullName;
 
     @JsonIgnore
     @Column("password_hash") private String passwordHash;

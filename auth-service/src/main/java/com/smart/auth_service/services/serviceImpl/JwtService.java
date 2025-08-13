@@ -1,4 +1,4 @@
-package com.smart.auth_service.services;
+package com.smart.auth_service.services.serviceImpl;
 
 import com.smart.auth_service.config.properties.SecurityProps;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +16,14 @@ public class JwtService {
     private final JwtEncoder encoder;
     private final SecurityProps props;
 
-    public String accessTokenForSubject(String email) {
+    public String accessTokenForSubject(String uuid) {
         Instant now = Instant.now();
         var claims = JwtClaimsSet.builder()
-                .issuer(props.getIssuer())
+                .issuer(props.getIssuer()) // issuer in our case auth-service
                 .issuedAt(now)
                 .expiresAt(now.plus(Duration.ofMinutes(props.getAccessTtlMin())))
-                .subject(email)
+                .subject(uuid)
+//                .claim("aud", List.of("api")) <-- aud; or List.of("user-service")
 //                .claim("scope", "profile.read profile.write") // adjust or remove
                 .build();
         return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

@@ -1,6 +1,7 @@
 package com.smart.auth_service;
 
 import com.smart.auth_service.config.properties.SecurityProps;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
