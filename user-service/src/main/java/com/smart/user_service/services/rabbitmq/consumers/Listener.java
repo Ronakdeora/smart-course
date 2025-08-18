@@ -2,7 +2,9 @@ package com.smart.user_service.services.rabbitmq.consumers;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Component;
 
@@ -12,10 +14,14 @@ import java.util.UUID;
 @Component
 @AllArgsConstructor
 @Slf4j
+@EnableRabbit
 public class Listener {
+//    @Value("${spring.rabbitmq.queue.user_created")
+//    private String userCreateQ;
+
     private final DatabaseClient db;
 
-    @RabbitListener(queues = "auth.queue")
+    @RabbitListener(queues = "user.created.q")
     public void onRegistered(Map<String, String> evt) {
         UUID userId = UUID.fromString(evt.get("user_id"));
         String email = evt.get("email");

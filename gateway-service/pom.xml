@@ -36,6 +36,7 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-gateway</artifactId>
+<!--			spring-cloud-gateway-server-webflux-->
 		</dependency>
 
 		<dependency>

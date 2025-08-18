@@ -1,13 +1,6 @@
 spring:
   application:
     name: auth-service
-  # For Rabbit MQ
-  rabbitmq:
-    host: localhost
-    password: guest
-    port: 5672
-    username: guest
-
   r2dbc:
     url: r2dbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USER}
@@ -21,7 +14,12 @@ spring:
     password: ${DB_PASSWORD}
     locations: classpath:db/migration
     baseline-on-migrate: true
-
+    # Rabbit MQ
+  rabbitmq:
+    host: localhost
+    password: guest
+    port: 5672
+    username: guest
 
 security:
   jwt:
@@ -40,6 +38,29 @@ eureka:
       defaultZone: http://localhost:8761/eureka
 logging:
   level:
-    org.springframework.r2dbc: INFO
-    io.r2dbc.postgresql: INFO
-    org.springframework.amqp: ERROR
+    # your code
+    com.smart: DEBUG
+
+    # Spring framework + WebFlux
+    org.springframework: INFO
+    org.springframework.web: DEBUG
+    org.springframework.web.reactive: DEBUG
+    #    org.springframework.web.reactive.function.client: DEBUG   # WebClient
+
+    # Reactor + Netty (HTTP server/client, channel events, SSL, etc.)
+    reactor.core: INFO
+    reactor.netty: DEBUG
+    reactor.netty.http.server: DEBUG
+    reactor.netty.http.client: DEBUG
+
+    # Security (handshakes, filters, auth decisions)
+    #    org.springframework.security: DEBUG
+
+    # Data/R2DBC (shows SQL from DatabaseClient)
+    org.springframework.r2dbc.core: DEBUG
+    io.r2dbc.spi: DEBUG
+
+    # RabbitMQ (Spring AMQP + Java client frames)
+    org.springframework.amqp: DEBUG
+    org.springframework.rabbit: DEBUG
+    com.rabbitmq.client: TRACE

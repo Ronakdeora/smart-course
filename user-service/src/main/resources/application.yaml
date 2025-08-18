@@ -23,12 +23,24 @@ spring:
     # Rabbit MQ
   rabbitmq:
     host: localhost
+    password: guest
     port: 5672
     username: guest
-    password: guest
+    exchange:
+      user: user.exchange
+    route:
+      user_created: user.created
+      user_deleted: user.deleted
+    queue:
+      user_created: user.created.q
+      user_deleted: user.deleted.q
+
+
+
 
 server:
   port: 8101
+
 
 eureka:
   client:
@@ -36,5 +48,29 @@ eureka:
       defaultZone: http://localhost:8761/eureka
 logging:
   level:
-    org.springframework.r2dbc: DEBUG
-    io.r2dbc.postgresql: DEBUG
+    # your code
+    com.smart: DEBUG
+
+    # Spring framework + WebFlux
+    org.springframework: INFO
+    org.springframework.web: DEBUG
+    org.springframework.web.reactive: DEBUG
+    #    org.springframework.web.reactive.function.client: DEBUG   # WebClient
+
+    # Reactor + Netty (HTTP server/client, channel events, SSL, etc.)
+    reactor.core: INFO
+    reactor.netty: DEBUG
+    reactor.netty.http.server: DEBUG
+    reactor.netty.http.client: DEBUG
+
+    # Security (handshakes, filters, auth decisions)
+    #    org.springframework.security: DEBUG
+
+    # Data/R2DBC (shows SQL from DatabaseClient)
+    org.springframework.r2dbc.core: DEBUG
+    io.r2dbc.spi: DEBUG
+
+    # RabbitMQ (Spring AMQP + Java client frames)
+    org.springframework.amqp: DEBUG
+    org.springframework.rabbit: DEBUG
+    com.rabbitmq.client: TRACE
