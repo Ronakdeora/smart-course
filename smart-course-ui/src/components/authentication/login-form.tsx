@@ -3,12 +3,36 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import apiClient from "@/lib/api-client/general-api-client";
+import { useRef } from "react";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+
+  const onsubmit = () => {
+    apiClient
+      .post("auth-service/auth/login", {
+        email: emailRef.current?.value,
+        password: passwordRef.current?.value,
+      })
+      .then((response) => {
+        const token = response.data?.accessToken;
+        if (token) {
+          localStorage.setItem("token", token);
+        }
+        navigate("/user");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -19,11 +43,17 @@ export function LoginForm({
           </CardDescription> */}
         </CardHeader>
         <CardContent>
-          <form>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              onsubmit();
+            }}
+          >
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
+                  ref={emailRef}
                   id="email"
                   type="email"
                   placeholder="m@example.com"
@@ -40,7 +70,12 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  ref={passwordRef}
+                  id="password"
+                  type="password"
+                  required
+                />
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full">
