@@ -4,33 +4,33 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router";
-import apiClient from "@/lib/api-client/general-api-client";
-import { useRef } from "react";
+import useLogin from "@/hooks/auth-hooks/useLogin";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const emailRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
+  const { login } = useLogin();
   const navigate = useNavigate();
 
-  const onsubmit = () => {
-    apiClient
-      .post("auth-service/auth/login", {
-        email: emailRef.current?.value,
-        password: passwordRef.current?.value,
-      })
-      .then((response) => {
-        const token = response.data?.accessToken;
-        if (token) {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const request = {
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+    };
+    if (request.email && request.password) {
+      login(request)
+        .then((response) => {
+          const token = response.data?.accessToken;
           localStorage.setItem("token", token);
-        }
-        navigate("/user");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+          navigate("/user");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
 
   return (
@@ -43,19 +43,14 @@ export function LoginForm({
           </CardDescription> */}
         </CardHeader>
         <CardContent>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              onsubmit();
-            }}
-          >
+          <form onSubmit={onSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
-                  ref={emailRef}
                   id="email"
                   type="email"
+                  name="email"
                   placeholder="m@example.com"
                   required
                 />
@@ -70,12 +65,7 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input
-                  ref={passwordRef}
-                  id="password"
-                  type="password"
-                  required
-                />
+                <Input id="password" type="password" name="password" required />
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full">
@@ -88,8 +78,8 @@ export function LoginForm({
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
-              <Link to="/register">
-                <a className="underline underline-offset-4">Sign up</a>
+              <Link to="/register" className="underline underline-offset-4">
+                Sign up
               </Link>
             </div>
           </form>

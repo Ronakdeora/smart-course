@@ -4,27 +4,20 @@ import { Button } from "../ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
-import { useRef } from "react";
-import apiClient from "@/lib/api-client/general-api-client";
+import useAuth from "@/hooks/auth-hooks/useAuth";
 
 export function AuthForm({ className, ...props }: React.ComponentProps<"div">) {
-  const emailRef = useRef<HTMLInputElement>(null);
-  const fullNameRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
+  const { register } = useAuth();
 
-  const onsubmit = () => {
-    apiClient
-      .post("auth-service/auth/register", {
-        email: emailRef.current?.value,
-        full_name: fullNameRef.current?.value,
-        password: passwordRef.current?.value,
-      })
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const request = {
+      email: formData.get("email") as string,
+      full_name: formData.get("name") as string,
+      password: formData.get("password") as string,
+    };
+    await register(request);
   };
 
   return (
@@ -37,17 +30,12 @@ export function AuthForm({ className, ...props }: React.ComponentProps<"div">) {
           </CardDescription> */}
         </CardHeader>
         <CardContent>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              onsubmit();
-            }}
-          >
+          <form onSubmit={onSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="name">Full Name</Label>
                 <Input
-                  ref={fullNameRef}
+                  name="name"
                   id="name"
                   type="text"
                   placeholder="Your Name"
@@ -57,9 +45,9 @@ export function AuthForm({ className, ...props }: React.ComponentProps<"div">) {
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
-                  ref={emailRef}
                   id="email"
                   type="email"
+                  name="email"
                   placeholder="m@example.com"
                   required
                 />
@@ -68,12 +56,7 @@ export function AuthForm({ className, ...props }: React.ComponentProps<"div">) {
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                 </div>
-                <Input
-                  ref={passwordRef}
-                  id="password"
-                  type="password"
-                  required
-                />
+                <Input id="password" name="password" type="password" required />
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full">
@@ -86,8 +69,8 @@ export function AuthForm({ className, ...props }: React.ComponentProps<"div">) {
             </div>
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
-              <Link to="/">
-                <a className="underline underline-offset-4">Sign in</a>
+              <Link to="/" className="underline underline-offset-4">
+                Sign in
               </Link>
             </div>
           </form>

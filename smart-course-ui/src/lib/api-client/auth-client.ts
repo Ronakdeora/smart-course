@@ -1,26 +1,25 @@
-// import apiClient from "./general-api-client";
+import type { registerRequest } from "@/hooks/auth-hooks/useAuth";
+import apiClient from "./general-api-client";
+import type { loginRequest } from "@/hooks/auth-hooks/useLogin";
 
-// class AuthClient {
-//   private static instance: AuthClient;
+class AuthClient {
+  public register(request: registerRequest) {
+    return apiClient.post("auth-service/auth/register", {
+      email: request.email,
+      full_name: request.full_name,
+      password: request.password,
+    });
+  }
+  public login(request: loginRequest) {
+    return apiClient.post("auth-service/auth/login", {
+      email: request.email,
+      password: request.password,
+    });
+  }
 
-//   private constructor() {
-//     // Private constructor to prevent instantiation
-//   }
+  public logout() {
+    return apiClient.post("auth-service/auth/logout");
+  }
+}
 
-//   public static getInstance(): AuthClient {
-//     if (!AuthClient.instance) {
-//       AuthClient.instance = new AuthClient();
-//     }
-//     return AuthClient.instance;
-//   }
-
-//   public login(username: string, password: string): void {
-//     // Logic for user login
-//     console.log(`User ${username} logged in.`);
-//   }
-
-//   public logout(): void {
-//     // Logic for user logout
-//     console.log('User logged out.');
-//   }
-// }
+export default AuthClient;
