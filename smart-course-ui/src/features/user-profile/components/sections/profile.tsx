@@ -3,7 +3,7 @@ import { Field } from "../fields/field";
 import { Section } from "../fields/section";
 import { Row } from "../fields/row";
 import { Input } from "@/components/ui/input";
-import type { UserProfileFormValues } from "@/features/types";
+import type { UserProfileFormValues } from "@/features/user-profile/utils/types";
 import { useFormContext, Controller } from "react-hook-form";
 import { LEARNING } from "../../utils/constants";
 import {
@@ -14,7 +14,11 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 
-// features/user-profile/components/sections/IdentitySection.tsx
+// register("full_name") wires an <Input> to the form state.
+// control is passed to Controller for components that don’t expose a plain onChange/value pair like native inputs (e.g., shadcn Select), and to useFieldArray.
+// watch("bio") lets us show the live character counter.
+// Because we typed it with <UserProfileFormValues>, you get full TS safety and autocompletion for field names.
+
 export function IdentitySection() {
   const {
     register,

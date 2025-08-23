@@ -12,7 +12,7 @@ import { TZ, LOCALES } from "../../utils/constants";
 import { Section } from "../fields/section";
 import { Row } from "../fields/row";
 import { Field } from "../fields/field";
-import type { UserProfileFormValues } from "@/features/types";
+import type { UserProfileFormValues } from "@/features/user-profile/utils/types";
 
 export function PreferencesSection() {
   const {

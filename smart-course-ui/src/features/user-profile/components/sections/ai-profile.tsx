@@ -14,7 +14,7 @@ import { PACE, TONE } from "../../utils/constants";
 import { Row } from "../fields/row";
 import { Label } from "@/components/ui/label";
 import { Plus, X } from "lucide-react";
-import type { UserProfileFormValues } from "@/features/types";
+import type { UserProfileFormValues } from "@/features/user-profile/utils/types";
 
 const AiProfileSection = () => {
   const {
@@ -23,10 +23,11 @@ const AiProfileSection = () => {
     watch,
     // formState: { errors },
   } = useFormContext<UserProfileFormValues>();
+  // Manages an array of fields inside your form state—add, remove, reorder, etc.—without losing React Hook Form’s performance benefits.
   const {
-    fields: customFields,
-    append: appendCustom,
-    remove: removeCustom,
+    fields: customFields, // [{id: 'abc', key: 'content_density', value: 'balanced'}, ...]
+    append: appendCustom, // add a new row
+    remove: removeCustom, // remove a row by index
   } = useFieldArray({ control, name: "ai_profile.custom" });
 
   const values = watch().ai_profile;

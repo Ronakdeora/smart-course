@@ -1,7 +1,6 @@
 package com.smart.auth_service.services.serviceImpl;
 
 import com.smart.auth_service.config.properties.SecurityProps;
-import com.smart.auth_service.entities.Account;
 import com.smart.common_libs.entities.responseDTOs.auth_service.AccountPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;

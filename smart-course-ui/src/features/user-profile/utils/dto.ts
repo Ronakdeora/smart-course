@@ -1,4 +1,28 @@
-import type { UserProfileFormValues } from "@/features/types";
+import type { UserProfileFormValues } from "@/features/user-profile/utils/types";
+
+export interface UserProfileDto {
+  fullName: string;
+  email: string;
+  standardLevel: string;
+  bio: string;
+  timezone: string;
+  locale: string;
+  weeklyTimeBudgetMin: number;
+  preferredSessionMin: number;
+  learningStyle: string;
+  accessibilityNotes: string;
+  goals: string;
+  priorKnowledgeTags: string[];
+  aiProfile: Record<string, unknown>;
+  languageProficiencies: {
+    languageCode: string;
+    level: string;
+    lastAssessedAt: string | null;
+  }[];
+  derived: {
+    sessionsPerWeek: number;
+  };
+}
 
 export function toDto(data: UserProfileFormValues) {
   const ai: Record<string, unknown> = {
@@ -11,30 +35,30 @@ export function toDto(data: UserProfileFormValues) {
   }
 
   return {
-    full_name: data.full_name,
+    fullName: data.full_name,
     email: data.email,
-    standard_level: data.standard_level,
+    standardLevel: data.standard_level,
     bio: data.bio,
     timezone: data.timezone,
     locale: data.locale,
-    weekly_time_budget_min: data.weekly_time_budget_min,
-    preferred_session_min: data.preferred_session_min,
-    learning_style: data.learning_style,
-    accessibility_notes: data.accessibility_notes,
+    weeklyTimeBudgetMin: data.weekly_time_budget_min,
+    preferredSessionMin: data.preferred_session_min,
+    learningStyle: data.learning_style,
+    accessibilityNotes: data.accessibility_notes,
     goals: data.goals,
-    prior_knowledge_tags: Array.from(
+    priorKnowledgeTags: Array.from(
       new Set(data.prior_knowledge_tags.map((t) => t.trim()).filter(Boolean))
     ),
-    ai_profile: ai,
-    language_proficiencies: (data.language_proficiencies || []).map((lp) => ({
-      language_code: lp.language_code,
+    aiProfile: ai,
+    languageProficiencies: (data.language_proficiencies || []).map((lp) => ({
+      languageCode: lp.language_code,
       level: lp.level,
-      last_assessed_at: lp.last_assessed_at
+      lastAssessedAt: lp.last_assessed_at
         ? new Date(lp.last_assessed_at).toISOString()
         : null,
     })),
     derived: {
-      sessions_per_week:
+      sessionsPerWeek:
         data.preferred_session_min > 0
           ? Math.max(
               1,

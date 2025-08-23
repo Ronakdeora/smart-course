@@ -23,7 +23,7 @@ export function LoginForm({
     if (request.email && request.password) {
       login(request)
         .then((response) => {
-          const token = response.data?.accessToken;
+          const token = response.accessToken;
           localStorage.setItem("token", token);
           navigate("/user");
         })

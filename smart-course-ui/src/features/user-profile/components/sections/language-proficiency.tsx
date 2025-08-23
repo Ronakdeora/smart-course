@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { LEVELS } from "../../utils/constants";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
-import type { UserProfileFormValues } from "@/features/types";
+import type { UserProfileFormValues } from "@/features/user-profile/utils/types";
 
 const LanguageProficiencySection = () => {
   const {

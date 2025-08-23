@@ -1,9 +1,12 @@
 // features/user-profile/hooks/useUserProfileForm.ts
 import { useForm, useFieldArray } from "react-hook-form";
 import { toDto } from "../utils/dto";
-import type { UserProfileFormValues } from "@/features/types";
+import type { UserProfileFormValues } from "@/features/user-profile/utils/types";
+import UserClient from "../api-client/user-client";
 
 export function useUserProfileForm() {
+  const userClient = new UserClient();
+
   const form = useForm<UserProfileFormValues>({
     mode: "onBlur",
     defaultValues: {
@@ -77,7 +80,15 @@ export function useUserProfileForm() {
       return;
     }
     const dto = toDto(values);
-    console.log("UserProfile DTO:", dto);
+    userClient
+      .updateUserProfile(dto)
+      .then(() => {
+        alert("Profile updated successfully!");
+      })
+      .catch((error) => {
+        console.error("Error updating profile:", error);
+        alert("Failed to update profile.");
+      });
   }
 
   return { form, langArray, customPrefArray, loadDemo, submit };

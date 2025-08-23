@@ -1,4 +1,4 @@
-import type { UserProfileFormValues } from "@/features/types";
+import type { UserProfileFormValues } from "@/features/user-profile/utils/types";
 
 // features/user-profile/utils/constants.ts
 export const TZ = [

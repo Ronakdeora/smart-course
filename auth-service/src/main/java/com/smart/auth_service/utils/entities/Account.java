@@ -1,4 +1,4 @@
-package com.smart.auth_service.entities;
+package com.smart.auth_service.utils.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

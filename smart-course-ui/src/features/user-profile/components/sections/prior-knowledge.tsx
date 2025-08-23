@@ -1,7 +1,7 @@
 import { Section } from "../fields/section";
 import { Field } from "../fields/field";
 import { TagsInput } from "../fields/tags-input";
-import type { UserProfileFormValues } from "@/features/types";
+import type { UserProfileFormValues } from "@/features/user-profile/utils/types";
 import { useFormContext } from "react-hook-form";
 
 const PriorKnowledgeSection = () => {

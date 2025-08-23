@@ -23,11 +23,11 @@ CREATE TABLE user_profile (
 -- Use CEFR-like levels or your own scale.
 CREATE TYPE proficiency_level AS ENUM ('A1','A2','B1','B2','C1','C2','Native');
 CREATE TABLE user_language_proficiencies (
+  id              BIGSERIAL PRIMARY KEY,
   user_id         UUID REFERENCES user_profile(user_id) ON DELETE CASCADE,
   language_code   TEXT NOT NULL,               -- ISO 639-1 like 'en','hi'
   level           proficiency_level NOT NULL,
-  last_assessed_at TIMESTAMPTZ,
-  PRIMARY KEY (user_id, language_code)
+  last_assessed_at TIMESTAMPTZ
 );
 
 -- Helper 2b) Guardrail if you still want “IQ/EQ”-like numbers

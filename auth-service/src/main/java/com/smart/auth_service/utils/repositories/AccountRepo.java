@@ -1,8 +1,7 @@
-package com.smart.auth_service.repositories;
+package com.smart.auth_service.utils.repositories;
 
-import com.smart.auth_service.entities.Account;
+import com.smart.auth_service.utils.entities.Account;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;

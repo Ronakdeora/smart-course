@@ -22,9 +22,9 @@ export default function UserProfileForm() {
           <h1 className="text-2xl font-semibold tracking-tight">
             User Profile
           </h1>
-          <p className="text-sm text-muted-foreground">
+          {/* <p className="text-sm text-muted-foreground">
             Keep your learning preferences up to date.
-          </p>
+          </p> */}
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -39,6 +39,7 @@ export default function UserProfileForm() {
       </header>
 
       <FormProvider {...form}>
+        {/* give us the useFormContext hook */}
         <form className="space-y-6" onSubmit={handleSubmit(submit)} noValidate>
           <IdentitySection />
           <PreferencesSection />

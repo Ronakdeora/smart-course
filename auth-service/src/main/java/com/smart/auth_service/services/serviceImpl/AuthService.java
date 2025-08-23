@@ -1,8 +1,8 @@
 package com.smart.auth_service.services.serviceImpl;
 
 import com.smart.auth_service.config.properties.SecurityProps;
-import com.smart.auth_service.entities.Account;
-import com.smart.auth_service.repositories.AccountRepo;
+import com.smart.auth_service.utils.entities.Account;
+import com.smart.auth_service.utils.repositories.AccountRepo;
 import com.smart.auth_service.services.IAuthService;
 import com.smart.auth_service.services.rabbitmq.publishers.MQPublisher;
 import com.smart.common_libs.entities.requestDTOs.auth_service.LoginReq;
