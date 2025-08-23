@@ -1,7 +1,7 @@
 import App from "@/App";
 import { AuthForm } from "@/components/authentication/auth-form";
 import { LoginForm } from "@/components/authentication/login-form";
-import UserProfile from "@/components/user-profile";
+import UserProfileForm from "@/components/user/user-profile";
 import { createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -19,7 +19,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/user",
-        element: <UserProfile />,
+        element: <UserProfileForm />,
       },
     ],
   },
