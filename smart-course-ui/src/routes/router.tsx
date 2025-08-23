@@ -1,7 +1,7 @@
 import App from "@/App";
 import { AuthForm } from "@/components/authentication/auth-form";
 import { LoginForm } from "@/components/authentication/login-form";
-import UserProfileForm from "@/components/user/user-profile";
+import UserProfileForm from "@/features/user-profile/components/user-profile-form";
 import { createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
