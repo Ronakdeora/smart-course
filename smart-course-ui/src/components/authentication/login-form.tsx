@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,14 +13,18 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const { login } = useLogin();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+
     const formData = new FormData(e.currentTarget);
     const request = {
       email: formData.get("email") as string,
       password: formData.get("password") as string,
     };
+
     if (request.email && request.password) {
       login(request)
         .then((response) => {
@@ -29,7 +34,12 @@ export function LoginForm({
         })
         .catch((error) => {
           console.error(error);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
+    } else {
+      setIsLoading(false);
     }
   };
 
@@ -53,6 +63,7 @@ export function LoginForm({
                   name="email"
                   placeholder="m@example.com"
                   required
+                  disabled={isLoading}
                 />
               </div>
               <div className="grid gap-3">
@@ -65,13 +76,23 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" name="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  name="password"
+                  required
+                  disabled={isLoading}
+                />
               </div>
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  Login
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? "Logging in..." : "Login"}
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  disabled={isLoading}
+                >
                   Login with Google
                 </Button>
               </div>

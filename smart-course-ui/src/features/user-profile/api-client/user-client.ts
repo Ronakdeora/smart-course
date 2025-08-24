@@ -2,7 +2,7 @@ import apiClient from "@/lib/api-client/general-api-client";
 import type { UserProfileDto } from "../utils/dto";
 
 class UserClient {
-  public updateUserProfile(request: UserProfileDto) {
+  public updateUserProfile(request: Partial<UserProfileDto>) {
     return apiClient.patch("user-service/profile", request);
   }
 

@@ -1,14 +1,17 @@
 // features/user-profile/hooks/useUserProfileForm.ts
 import { useForm } from "react-hook-form";
 import { toDto, type UserProfileDto } from "../utils/dto";
-
+import { useRef } from "react";
 import type { UserProfileFormValues } from "@/features/user-profile/utils/types";
 import UserClient from "../api-client/user-client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { isEqual } from "lodash";
 
 export function useUserProfileForm() {
   const userClient = new UserClient();
   const queryClient = useQueryClient();
+  // Keep reference to original data for comparison
+  const originalData = useRef<UserProfileFormValues | null>(null);
 
   const userProfileQuery = useQuery<UserProfileDto>({
     queryKey: ["userProfile"],
@@ -40,6 +43,8 @@ export function useUserProfileForm() {
       })),
     };
 
+    // Store original data for comparison
+    originalData.current = { ...data };
     form.reset(data);
   }
 
@@ -64,6 +69,7 @@ export function useUserProfileForm() {
   });
 
   async function submit(values: UserProfileFormValues) {
+    console.log("Submitting form with values:", values);
     if (
       values.preferred_session_min > values.weekly_time_budget_min &&
       values.weekly_time_budget_min > 0
@@ -71,12 +77,55 @@ export function useUserProfileForm() {
       alert("Session length cannot exceed weekly budget.");
       return;
     }
-    const dto = toDto(values);
+
+    // Create an object with only changed fields
+    const changedValues: Partial<UserProfileFormValues> = {};
+
+    if (!originalData.current) {
+      // If no original data, send everything
+      const fullDto = toDto(values);
+      return updateProfile(fullDto);
+    }
+
+    // Compare each field to find changes
+    Object.keys(values).forEach((key) => {
+      const typedKey = key as keyof UserProfileFormValues;
+      const currentValue = values[typedKey];
+      const originalValue = originalData.current?.[typedKey];
+
+      // Add to changedValues only if different
+      if (!isEqual(currentValue, originalValue)) {
+        (changedValues as Record<string, unknown>)[typedKey] = currentValue;
+      }
+    });
+
+    // If nothing changed, don't submit
+    if (Object.keys(changedValues).length === 0) {
+      alert("No changes detected");
+      return;
+    }
+
+    // Convert partial values to DTO
+    const partialDto = toDto(changedValues as UserProfileFormValues);
+
+    updateProfile(partialDto);
+  }
+
+  function updateProfile(dto: Partial<UserProfileDto>) {
     userClient
       .updateUserProfile(dto)
       .then(() => {
         alert("Profile updated successfully!");
-        queryClient.setQueryData(["userProfile"], dto);
+        // Update the query data with the new values
+        queryClient.setQueryData(
+          ["userProfile"],
+          (oldData: UserProfileDto | undefined) => ({
+            ...oldData,
+            ...dto,
+          })
+        );
+        // Update our reference to original data
+        originalData.current = form.getValues();
       })
       .catch((error) => {
         console.error("Error updating profile:", error);
