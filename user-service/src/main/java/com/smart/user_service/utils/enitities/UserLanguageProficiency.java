@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.data.relational.core.mapping.Column;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Table("user_language_proficiencies")
@@ -27,6 +27,6 @@ public class UserLanguageProficiency {
     private ProficiencyLevel level; // maps via String <-> enum; works fine for PG enum
 
     @Column("last_assessed_at")
-    private Instant lastAssessedAt;
+    private LocalDate lastAssessedAt;
 }
 

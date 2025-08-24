@@ -7,9 +7,21 @@ import AiProfileSection from "./sections/ai-profile";
 import { IdentitySection } from "./sections/profile";
 import LanguageProficiencySection from "./sections/language-proficiency";
 import PriorKnowledgeSection from "./sections/prior-knowledge";
+import { useEffect } from "react";
 
 export default function UserProfileForm() {
-  const { form, loadDemo, submit } = useUserProfileForm();
+  const {
+    form,
+    submit,
+    patchForm,
+    userProfileQuery: { data: userProfileData },
+  } = useUserProfileForm();
+
+  useEffect(() => {
+    patchForm(userProfileData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userProfileData]);
+
   const {
     handleSubmit,
     formState: { isSubmitting, isDirty },
@@ -25,16 +37,6 @@ export default function UserProfileForm() {
           {/* <p className="text-sm text-muted-foreground">
             Keep your learning preferences up to date.
           </p> */}
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="secondary"
-            className="rounded-xl"
-            onClick={loadDemo}
-          >
-            Load demo data
-          </Button>
         </div>
       </header>
 

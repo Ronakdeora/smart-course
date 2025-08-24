@@ -1,11 +1,47 @@
 // features/user-profile/hooks/useUserProfileForm.ts
-import { useForm, useFieldArray } from "react-hook-form";
-import { toDto } from "../utils/dto";
+import { useForm } from "react-hook-form";
+import { toDto, type UserProfileDto } from "../utils/dto";
+
 import type { UserProfileFormValues } from "@/features/user-profile/utils/types";
 import UserClient from "../api-client/user-client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function useUserProfileForm() {
   const userClient = new UserClient();
+  const queryClient = useQueryClient();
+
+  const userProfileQuery = useQuery<UserProfileDto>({
+    queryKey: ["userProfile"],
+    queryFn: () => userClient.getUserProfile().then((res) => res.data),
+    enabled: !!localStorage.getItem("token"),
+  });
+
+  function patchForm(profile: UserProfileDto | undefined) {
+    if (!profile) return;
+
+    const data: UserProfileFormValues = {
+      full_name: profile.fullName,
+      email: profile.email,
+      standard_level: profile.standardLevel,
+      bio: profile.bio,
+      timezone: profile.timezone,
+      locale: profile.locale,
+      weekly_time_budget_min: profile.weeklyTimeBudgetMin,
+      preferred_session_min: profile.preferredSessionMin,
+      learning_style: profile.learningStyle,
+      accessibility_notes: profile.accessibilityNotes,
+      goals: profile.goals,
+      prior_knowledge_tags: profile.priorKnowledgeTags,
+      ai_profile: profile.aiProfile,
+      language_proficiencies: profile.languageProficiencies.map((lp) => ({
+        language_code: lp.languageCode,
+        level: lp.level,
+        last_assessed_at: lp.lastAssessedAt,
+      })),
+    };
+
+    form.reset(data);
+  }
 
   const form = useForm<UserProfileFormValues>({
     mode: "onBlur",
@@ -27,50 +63,6 @@ export function useUserProfileForm() {
     },
   });
 
-  // expose field arrays hooks creators for sections that need them
-  const langArray = useFieldArray({
-    control: form.control,
-    name: "language_proficiencies",
-  });
-  const customPrefArray = useFieldArray({
-    control: form.control,
-    name: "ai_profile.custom",
-  });
-
-  function loadDemo() {
-    const demo: UserProfileFormValues = {
-      full_name: "Anish Kumar",
-      email: "anish@example.com",
-      standard_level: "UG",
-      bio: "Backend dev learning React.",
-      timezone: "Asia/Kolkata",
-      locale: "en-IN",
-      weekly_time_budget_min: 360,
-      preferred_session_min: 45,
-      learning_style: "Mixed",
-      accessibility_notes: "",
-      goals: "Finish React + DSA in 12 weeks.",
-      prior_knowledge_tags: ["algebra", "git", "javascript"],
-      ai_profile: {
-        pace: "fast",
-        tone: "casual",
-        custom: [
-          { key: "content_density", value: "balanced" },
-          { key: "prefers_quizzes", value: "true" },
-        ],
-      },
-      language_proficiencies: [
-        {
-          language_code: "en",
-          level: "Native",
-          last_assessed_at: "2024-06-01",
-        },
-        { language_code: "hi", level: "B2", last_assessed_at: "2023-12-15" },
-      ],
-    };
-    form.reset(demo);
-  }
-
   async function submit(values: UserProfileFormValues) {
     if (
       values.preferred_session_min > values.weekly_time_budget_min &&
@@ -84,6 +76,7 @@ export function useUserProfileForm() {
       .updateUserProfile(dto)
       .then(() => {
         alert("Profile updated successfully!");
+        queryClient.setQueryData(["userProfile"], dto);
       })
       .catch((error) => {
         console.error("Error updating profile:", error);
@@ -91,5 +84,5 @@ export function useUserProfileForm() {
       });
   }
 
-  return { form, langArray, customPrefArray, loadDemo, submit };
+  return { form, submit, patchForm, userProfileQuery };
 }

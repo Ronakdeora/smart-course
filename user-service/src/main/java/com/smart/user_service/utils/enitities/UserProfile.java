@@ -1,7 +1,6 @@
 package com.smart.user_service.utils.enitities;
 
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.r2dbc.postgresql.codec.Json;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,10 +9,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Table("user_profile")
@@ -43,5 +44,8 @@ public class UserProfile {
 
     @CreatedDate @Column("created_at") private Instant createdAt;
     @LastModifiedDate @Column("updated_at") private Instant updatedAt;
+
+    @Transient
+    private List<UserLanguageProficiency> languageProficiencies; // not a DB column
 }
 
