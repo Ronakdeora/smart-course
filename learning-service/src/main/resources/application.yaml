@@ -1,6 +1,11 @@
 spring:
   application:
     name: learning-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000
 
   r2dbc:
     url: r2dbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
@@ -15,6 +20,20 @@ spring:
     password: ${DB_PASSWORD}
     locations: classpath:db/migration
     baseline-on-migrate: true
+#    Rabbit MQ
+  rabbitmq:
+    host: localhost
+    password: guest
+    port: 5672
+    username: guest
+    exchange:
+      course: course.exchange
+    route:
+      course_generate: course.generate
+      course_status: course.status
+    queue:
+      course_generate: course.generate.queue
+      course_status: course.status.queue
 
 server:
   port: 8102
