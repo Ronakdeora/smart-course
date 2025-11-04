@@ -16,17 +16,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-//    @Value("${spring.rabbitmq.exchange.user")
-//    private String userExchange;
-//    @Value("${spring.rabbitmq.queue.user_created")
-//    private String userCreateQ;
-//    @Value("${spring.rabbitmq.route.user_created")
-//    private String userRoutingKey;
+    @Value("${spring.rabbitmq.exchange.user")
+    private String userExchange;
+    @Value("${spring.rabbitmq.queue.user_created")
+    private String userCreateQ;
+    @Value("${spring.rabbitmq.route.user_created")
+    private String userRoutingKey;
 
 
-    private String userExchange = "user.exchange";
-    private String userCreateQ = "user.created.q";
-    private String userRoutingKey = "user.created";
+//    private String userExchange = "user.exchange";
+//    private String userCreateQ = "user.created.q";
+//    private String userRoutingKey = "user.created";
 
 
     @Bean

@@ -18,9 +18,10 @@ export default function UserProfileForm() {
   } = useUserProfileForm();
 
   useEffect(() => {
-    patchForm(userProfileData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userProfileData]);
+    if (userProfileData) {
+      patchForm(userProfileData);
+    }
+  }, [userProfileData, patchForm]);
 
   const {
     handleSubmit,

@@ -1,7 +1,7 @@
 // features/user-profile/hooks/useUserProfileForm.ts
 import { useForm } from "react-hook-form";
 import { toDto, type UserProfileDto } from "../utils/dto";
-import { useRef } from "react";
+import { useRef, useCallback } from "react";
 import type { UserProfileFormValues } from "@/features/user-profile/utils/types";
 import UserClient from "../api-client/user-client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -12,6 +12,7 @@ export function useUserProfileForm() {
   const queryClient = useQueryClient();
   // Keep reference to original data for comparison
   const originalData = useRef<UserProfileFormValues | null>(null);
+  const hasPatched = useRef(false);
 
   const userProfileQuery = useQuery<UserProfileDto>({
     queryKey: ["userProfile"],
@@ -19,8 +20,28 @@ export function useUserProfileForm() {
     enabled: !!localStorage.getItem("token"),
   });
 
-  function patchForm(profile: UserProfileDto | undefined) {
-    if (!profile) return;
+  const form = useForm<UserProfileFormValues>({
+    mode: "onBlur",
+    defaultValues: {
+      full_name: "",
+      email: "",
+      standard_level: "",
+      bio: "",
+      timezone: "Asia/Kolkata",
+      locale: "en-IN",
+      weekly_time_budget_min: 300,
+      preferred_session_min: 45,
+      learning_style: "Mixed",
+      accessibility_notes: "",
+      goals: "",
+      prior_knowledge_tags: [],
+      ai_profile: { pace: "normal", tone: "neutral", custom: [] },
+      language_proficiencies: [],
+    },
+  });
+
+  const patchForm = useCallback((profile: UserProfileDto | undefined) => {
+    if (!profile || hasPatched.current) return;
 
     const data: UserProfileFormValues = {
       full_name: profile.fullName,
@@ -46,27 +67,8 @@ export function useUserProfileForm() {
     // Store original data for comparison
     originalData.current = { ...data };
     form.reset(data);
-  }
-
-  const form = useForm<UserProfileFormValues>({
-    mode: "onBlur",
-    defaultValues: {
-      full_name: "",
-      email: "",
-      standard_level: "",
-      bio: "",
-      timezone: "Asia/Kolkata",
-      locale: "en-IN",
-      weekly_time_budget_min: 300,
-      preferred_session_min: 45,
-      learning_style: "Mixed",
-      accessibility_notes: "",
-      goals: "",
-      prior_knowledge_tags: [],
-      ai_profile: { pace: "normal", tone: "neutral", custom: [] },
-      language_proficiencies: [],
-    },
-  });
+    hasPatched.current = true;
+  }, [form]);
 
   async function submit(values: UserProfileFormValues) {
     console.log("Submitting form with values:", values);

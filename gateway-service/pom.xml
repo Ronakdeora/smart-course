@@ -26,6 +26,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<start-class>com.smart.gateway_service.GatewayServiceApplication</start-class>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -56,6 +57,17 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<!--                    <fork>true</fork>-->
+					<mainClass>${start-class}</mainClass>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

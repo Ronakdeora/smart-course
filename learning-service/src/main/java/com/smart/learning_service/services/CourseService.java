@@ -1,5 +1,6 @@
 package com.smart.learning_service.services;
 
+import com.smart.common.security.SecurityUtils;
 import com.smart.learning_service.model.Course;
 import com.smart.learning_service.model.Lesson;
 import com.smart.learning_service.model.LessonBody;
@@ -83,28 +84,44 @@ public class CourseService {
     }
 
     public Mono<CourseGenerationResponseDTO> createCourse(CourseGenerationRequestDTO requestDTO) {
+        // Ensure there's a requestId
         if (!StringUtils.hasText(requestDTO.getRequestId())) {
             requestDTO.setRequestId(UUID.randomUUID().toString());
         }
-        logger.info("Publishing course generation request for userId: {}, topic: {}", requestDTO.getUserId(), requestDTO.getTopic());
-        try {
-            coursePublisher.publishCourseGenerationRequest(requestDTO);
-            logger.info("Course generation request published for requestId: {}", requestDTO.getRequestId());
-            return Mono.just(new CourseGenerationResponseDTO(
-                requestDTO.getUserId(),
-                null,
-                "QUEUED",
-                "Course generation request submitted."
-            ));
-        } catch (Exception e) {
-            logger.error("Failed to publish course generation request for requestId: {}: {}", requestDTO.getRequestId(), e.getMessage(), e);
-            return Mono.just(new CourseGenerationResponseDTO(
-                requestDTO.getUserId(),
-                null,
-                "FAILED",
-                "Failed to submit course generation request: " + e.getMessage()
-            ));
-        }
+
+        // Resolve userId from SecurityUtils as a String (empty string = no user).
+        return SecurityUtils.getUserId()
+            .map(UUID::toString)
+            .defaultIfEmpty("") // use empty sentinel to avoid null emissions
+            .flatMap(userIdStr -> {
+                // If security provides a user and DTO doesn't have one, set it.
+                if (StringUtils.hasText(userIdStr) && !StringUtils.hasText(requestDTO.getUserId())) {
+                    requestDTO.setUserId(userIdStr);
+                }
+
+                logger.info("Publishing course generation request for userId: {}, topic: {}", requestDTO.getUserId(), requestDTO.getTopic());
+
+                // Use Mono.defer so synchronous exceptions from the publisher become onError signals
+                return Mono.defer(() -> {
+                    coursePublisher.publishCourseGenerationRequest(requestDTO);
+                    logger.info("Course generation request published for requestId: {}", requestDTO.getRequestId());
+                    return Mono.just(new CourseGenerationResponseDTO(
+                        requestDTO.getUserId(),
+                        null,
+                        "QUEUED",
+                        "Course generation request submitted."
+                    ));
+                });
+            })
+            .onErrorResume(e -> {
+                logger.error("Unexpected error creating course for requestId {}: {}", requestDTO.getRequestId(), e.getMessage(), e);
+                return Mono.just(new CourseGenerationResponseDTO(
+                    requestDTO.getUserId(),
+                    null,
+                    "FAILED",
+                    "Failed to submit course generation request: " + e.getMessage()
+                ));
+            });
     }
 
     public Flux<Lesson> getLessonsForCourse(UUID courseId) {

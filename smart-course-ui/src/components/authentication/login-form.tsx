@@ -30,7 +30,14 @@ export function LoginForm({
         .then((response) => {
           const token = response.accessToken;
           localStorage.setItem("token", token);
-          navigate("/user");
+          
+          // Store user data for app initialization
+          if (response.user) {
+            localStorage.setItem("user", JSON.stringify(response.user));
+          }
+          
+          // Navigate to dashboard - AppInitializer will handle routing
+          navigate("/dashboard");
         })
         .catch((error) => {
           console.error(error);
