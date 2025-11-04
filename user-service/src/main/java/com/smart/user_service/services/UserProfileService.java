@@ -4,7 +4,7 @@ package com.smart.user_service.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smart.common_libs.entities.commonDTOs.user_service.UserProfileDto;
 import com.smart.common_libs.entities.responseDTOs.auth_service.StandardMessage;
-import com.smart.user_service.security.SecurityUtils;
+import com.smart.common.security.SecurityUtils;
 import com.smart.user_service.utils.enitities.UserLanguageProficiency;
 import com.smart.user_service.utils.enitities.UserProfile;
 import io.r2dbc.postgresql.codec.Json;

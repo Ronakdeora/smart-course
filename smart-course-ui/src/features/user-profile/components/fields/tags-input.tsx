@@ -2,11 +2,11 @@ import { Badge } from "@/components/ui/badge";
 import React from "react";
 
 export function TagsInput({
-  value,
+  value = [],
   onChange,
   placeholder,
 }: {
-  value: string[];
+  value?: string[];
   onChange: (t: string[]) => void;
   placeholder?: string;
 }) {
@@ -14,13 +14,13 @@ export function TagsInput({
   function addTag(tag: string) {
     const t = tag.trim();
     if (!t) return;
-    if (value.includes(t)) return;
-    onChange([...value, t]);
+    if ((value || []).includes(t)) return;
+    onChange([...(value || []), t]);
     setDraft("");
   }
   return (
     <div className="rounded-2xl border bg-transparent px-3 py-2 flex flex-wrap gap-2 focus-within:ring-2 focus-within:ring-ring/40 ">
-      {value.map((t) => (
+      {(value || []).map((t) => (
         <Badge key={t} variant="secondary" className="rounded-xl">
           {t}
         </Badge>
@@ -33,8 +33,8 @@ export function TagsInput({
             e.preventDefault();
             addTag(draft);
           }
-          if (e.key === "Backspace" && draft === "" && value.length)
-            onChange(value.slice(0, -1));
+          if (e.key === "Backspace" && draft === "" && (value || []).length)
+            onChange((value || []).slice(0, -1));
         }}
         placeholder={placeholder}
         className="flex-1 outline-none bg-transparent text-sm min-w-[8ch]"

@@ -36,6 +36,7 @@ export function IdentitySection() {
       <Row>
         <Field label="Full name">
           <Input
+            readOnly
             placeholder="e.g., Anish Kumar"
             aria-invalid={!!errors.full_name}
             className={errors.full_name ? "border-red-500" : undefined}
@@ -51,6 +52,7 @@ export function IdentitySection() {
         </Field>
         <Field label="Email">
           <Input
+            readOnly
             placeholder="name@example.com"
             type="email"
             aria-invalid={!!errors.email}

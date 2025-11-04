@@ -3,7 +3,7 @@ package com.smart.user_service.controllers;
 
 import com.smart.common_libs.entities.commonDTOs.user_service.UserProfileDto;
 import com.smart.common_libs.entities.responseDTOs.auth_service.StandardMessage;
-import com.smart.user_service.security.SecurityUtils;
+import com.smart.common.security.SecurityUtils;
 import com.smart.user_service.services.UserProfileService;
 import com.smart.user_service.utils.enitities.UserProfile;
 import lombok.AllArgsConstructor;

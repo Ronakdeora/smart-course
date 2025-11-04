@@ -74,11 +74,12 @@
 			<scope>runtime</scope>
 		</dependency>
 
-<!--		Jwt Authentication-->
-		<dependency>
+<!--		Jwt Authentication (now provided by common-libs) -->
+<!--		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-		</dependency>
+		</dependency> -->
+
 <!-- 		for rabbitMq -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
