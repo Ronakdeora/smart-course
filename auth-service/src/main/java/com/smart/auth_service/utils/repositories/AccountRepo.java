@@ -8,5 +8,6 @@ import java.util.UUID;
 
 public interface AccountRepo extends ReactiveCrudRepository<Account, UUID> {
     Mono<Account> findByEmail(String email);  // works great with CITEXT
+    Mono<Account> findByGoogleId(String googleId);  // find by Google OAuth ID
 }
 

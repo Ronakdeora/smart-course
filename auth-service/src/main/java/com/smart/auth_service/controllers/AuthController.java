@@ -2,8 +2,10 @@ package com.smart.auth_service.controllers;
 
 
 import com.smart.auth_service.services.IAuthService;
+import com.smart.common_libs.entities.requestDTOs.auth_service.GoogleTokenExchangeReq;
 import com.smart.common_libs.entities.requestDTOs.auth_service.LoginReq;
 import com.smart.common_libs.entities.requestDTOs.auth_service.RegisterReq;
+import com.smart.common_libs.entities.responseDTOs.auth_service.GoogleAuthResponse;
 import com.smart.common_libs.entities.responseDTOs.auth_service.TokenRes;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -29,5 +31,10 @@ public class AuthController {
     @PostMapping("/login")
     public Mono<TokenRes> login(@RequestBody LoginReq req) {
         return authService.authenticateLogin(req);
+    }
+
+    @PostMapping("/google/exchange")
+    public Mono<GoogleAuthResponse> googleTokenExchange(@Valid @RequestBody GoogleTokenExchangeReq req) {
+        return authService.googleTokenExchange(req);
     }
 }

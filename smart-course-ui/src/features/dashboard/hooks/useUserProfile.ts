@@ -22,8 +22,7 @@ export const useUserProfile = (userId: string | null) => {
       // Check if essential profile fields are filled
       const isComplete = !!(
         profile?.fullName &&
-        profile?.gradeLevel &&
-        profile?.preferredLanguage
+        profile?.gradeLevel
       );
       
       console.log("📋 Profile complete:", isComplete);

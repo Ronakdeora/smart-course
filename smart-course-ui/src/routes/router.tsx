@@ -1,6 +1,7 @@
 import App from "@/App";
 import { AuthForm } from "@/components/authentication/auth-form";
 import { LoginForm } from "@/components/authentication/login-form";
+import { GoogleCallback } from "@/components/authentication/GoogleCallback";
 import UserProfileForm from "@/features/user-profile/components/user-profile-form";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <LoginForm />,
+      },
+      {
+        path: "/login/google",
+        element: <GoogleCallback />,
       },
       {
         path: "/register",

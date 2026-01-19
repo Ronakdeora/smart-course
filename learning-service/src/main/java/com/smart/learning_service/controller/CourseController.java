@@ -32,7 +32,11 @@ public class CourseController {
         return SecurityUtils.getUserId()
                 .doOnNext(userId -> logger.info("Received request to fetch courses for userId: {}", userId))
                 .flatMapMany(courseService::getCoursesForUser)
-                .switchIfEmpty(Flux.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated")));
+                .doOnComplete(() -> logger.info("Course retrieval completed"))
+                .onErrorResume(e -> {
+                    logger.error("Error fetching courses for user: {}", e.getMessage(), e);
+                    return Flux.error(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch courses"));
+                });
     }
 
     @GetMapping(value = "/{courseId}", produces = MediaType.APPLICATION_JSON_VALUE)

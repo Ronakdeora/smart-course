@@ -20,6 +20,12 @@ class AuthClient {
   public logout() {
     return apiClient.post("auth-service/auth/logout");
   }
+
+  public googleTokenExchange(authorizationCode: string) {
+    return apiClient.post("auth-service/auth/google/exchange", {
+      code: authorizationCode,
+    });
+  }
 }
 
 export default AuthClient;

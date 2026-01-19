@@ -25,8 +25,12 @@ public class Account {
     @Column("full_name") private String fullName;
 
     @JsonIgnore
-    @Column("password_hash") private String passwordHash;
+    @Column("password_hash") private String passwordHash;  // Nullable for OAuth users
 
+    @Column("google_id") private String googleId;  // Google OAuth ID
+    @Column("profile_picture_url") private String profilePictureUrl;  // Profile picture from OAuth
+
+    @Builder.Default
     @Column("is_active") private boolean isActive = true;
     @Column("email_verified_at") private Instant emailVerifiedAt;
     @CreatedDate @Column("created_at") private Instant createdAt;

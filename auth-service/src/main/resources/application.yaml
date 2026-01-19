@@ -28,6 +28,12 @@ security:
     private-key-pem: ${JWT_PRIVATE_PEM_KEY_LOCATION}
     public-key-pem:  ${JWT_PUBLIC_PEM_KEY_LOCATION}
 
+google:
+  oauth:
+    client-id: ${GOOGLE_CLIENT_ID}
+    client-secret: ${GOOGLE_CLIENT_SECRET}
+    redirect-uri: ${GOOGLE_REDIRECT_URI}
+
 
 server:
   port: 9000
