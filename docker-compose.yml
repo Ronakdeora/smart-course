@@ -1,0 +1,15 @@
+name: smart-course-local
+
+services:
+  discovery-service:
+    build: ./discovery-service
+    ports:
+      - 8761:8761
+  gateway-service:
+    build: ./gateway-service
+    ports:
+      - 8080:8080
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka
+    depends_on:
+      - discovery-service
