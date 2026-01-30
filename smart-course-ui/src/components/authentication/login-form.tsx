@@ -53,8 +53,9 @@ export function LoginForm({
   };
 
   return (
-    <div className={cn("flex flex-col gap-6 max-w-sm", className)} {...props}>
-      <Card>
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
+      <div className={cn("flex flex-col gap-6 w-full max-w-sm", className)} {...props}>
+        <Card className="shadow-lg">
         <CardHeader className={"text-center"}>
           <CardTitle>Login to your account</CardTitle>
           {/* <CardDescription>
@@ -148,6 +149,7 @@ export function LoginForm({
           </form>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
